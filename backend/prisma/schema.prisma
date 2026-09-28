@@ -13,12 +13,17 @@ model Business {
   slug      String   @unique
   industry  String   @default("general")
   website   String?
+  description String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users     User[]
-  leads     Lead[]
-  services  Service[]
+  users        User[]
+  leads        Lead[]
+  services     Service[]
+  knowledge    Knowledge?
+  faqs         FAQ[]
+  policies     Policy[]
+  businessHours BusinessHours[]
 }
 
 model User {
@@ -39,6 +44,60 @@ model Service {
   description String?
   price       Decimal? @db.Decimal(10,2)
   createdAt   DateTime @default(now())
+}
+
+model Knowledge {
+  id          String   @id @default(cuid())
+  businessId  String   @unique
+  business    Business @relation(fields: [businessId], references: [id])
+  
+  businessDescription String?
+  bookingUrl  String?
+  paymentUrl  String?
+  contactEmail String?
+  contactPhone String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model FAQ {
+  id          String   @id @default(cuid())
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id])
+  
+  question    String
+  answer      String
+  category    String? @default("general")
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Policy {
+  id          String   @id @default(cuid())
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id])
+  
+  name        String
+  content     String
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model BusinessHours {
+  id          String   @id @default(cuid())
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id])
+  
+  dayOfWeek   Int      @db.Integer
+  openTime    String?
+  closeTime   String?
+  isClosed    Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Lead {

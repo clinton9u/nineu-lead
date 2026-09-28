@@ -1,16 +1,31 @@
 import express from "express";
-import { ensureBusinessBySlug } from "../services/leadService.js";
+import cors from "cors";
+import dotenv from "dotenv";
 
-const router = express.Router();
+import businessesRouter from "./routes/businesses.js";
+import dashboardRouter from "./routes/dashboard.js";
+import leadsRouter from "./routes/leads.js";
+import knowledgeRouter from "./routes/knowledge.js";
+import chatRouter from "./routes/chat.js";
 
-router.get("/:slug", async (req, res) => {
-  try {
-    const business = await ensureBusinessBySlug(req.params.slug);
-    return res.json(business);
-  } catch (error) {
-    console.error("Business resolution failed:", error);
-    return res.status(500).json({ error: "Failed to resolve business" });
-  }
+dotenv.config();
+
+const app = express();
+const port = process.env.PORT || 4000;
+
+app.use(cors());
+app.use(express.json());
+
+app.get("/health", (req, res) => {
+  res.json({ ok: true, message: "NineU Lead API is live" });
 });
 
-export default router;
+app.use("/api/businesses", businessesRouter);
+app.use("/api/dashboard", dashboardRouter);
+app.use("/api/leads", leadsRouter);
+app.use("/api/knowledge", knowledgeRouter);
+app.use("/api/chat", chatRouter);
+
+app.listen(port, () => {
+  console.log(`NineU Lead backend listening on http://localhost:${port}`);
+});
