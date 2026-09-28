@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Business {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  industry  String   @default("general")
+  website   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users     User[]
+  leads     Lead[]
+  services  Service[]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String?
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id])
+  name        String
+  description String?
+  price       Decimal? @db.Decimal(10,2)
+  createdAt   DateTime @default(now())
+}
+
+model Lead {
+  id               String        @id @default(cuid())
+  businessId       String
+  business         Business      @relation(fields: [businessId], references: [id])
+  customerName     String
+  email            String?
+  phone            String?
+  serviceInterest  String
+  preferredDate    DateTime?
+  source           String        @default("website_chat")
+  timeline         String?
+  qualification    Qualification @default(COLD)
+  nextAction       String?
+  leadStatus       LeadStatus    @default(NEW)
+  booked           Boolean       @default(false)
+  paid             Boolean       @default(false)
+  revenue          Decimal?      @db.Decimal(10,2)
+  notes            String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+}
+
+enum Qualification {
+  HOT
+  WARM
+  COLD
+}
+
+enum LeadStatus {
+  NEW
+  QUALIFIED
+  BOOKED
+  CONVERTED
+  LOST
+}
