@@ -1,27 +1,18 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-
-import businessesRouter from "./routes/businesses.js";
-import dashboardRouter from "./routes/dashboard.js";
-import leadsRouter from "./routes/leads.js";
-
-dotenv.config();
-
-const app = express();
-const port = process.env.PORT || 4000;
-
-app.use(cors());
-app.use(express.json());
-
-app.get("/health", (req, res) => {
-  res.json({ ok: true, message: "NineU Lead API is live" });
-});
-
-app.use("/api/businesses", businessesRouter);
-app.use("/api/dashboard", dashboardRouter);
-app.use("/api/leads", leadsRouter);
-
-app.listen(port, () => {
-  console.log(`NineU Lead backend listening on http://localhost:${port}`);
-});
+{
+  "name": "nineu-lead-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.0",
+    "vite": "^5.0.0"
+  }
+}
