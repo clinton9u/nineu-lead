@@ -18,7 +18,7 @@ router.post("/:businessSlug/message", async (req, res) => {
       return res.status(404).json({ error: "Business not found" });
     }
 
-    const assistantResponse = generateAssistantResponse(userMessage, knowledge);
+    const assistantResponse = await generateAssistantResponse(userMessage, knowledge, conversationHistory);
     const shouldCaptureLeadData = shouldCaptureLead(userMessage, conversationHistory);
 
     return res.json({
